@@ -83,6 +83,7 @@ namespace DaLinkO
             myPipeServer.debugMods = true;
             myPipeServer.Run();
             activePacks.packsAreUpdated -= new ActiveBeansUpdatedHandler(refreshLiveData);
+            timerUiFineRefresh.Stop();
         }
         private void switchToNormalMode()
         {
@@ -91,6 +92,7 @@ namespace DaLinkO
             buttonPauseDebug.Text = "Pause";
             updateSourceDGV();
             activePacks.packsAreUpdated -= new ActiveBeansUpdatedHandler(refreshLiveData);
+            timerUiFineRefresh.Stop();
         }
         private void switchToLiveDataView()
         {
@@ -116,8 +118,8 @@ namespace DaLinkO
             }
             PackBind.ResetBindings(true);
             ItemBind.ResetBindings(true);
-            
-            activePacks.packsAreUpdated += new ActiveBeansUpdatedHandler(refreshLiveData);
+            timerUiFineRefresh.Start();
+            //activePacks.packsAreUpdated += new ActiveBeansUpdatedHandler(refreshLiveData);
         }
         public void refreshLiveData()
         {
@@ -345,6 +347,11 @@ namespace DaLinkO
                 }
             }
         }
+        private void timerUiFineRefresh_Tick(object sender, EventArgs e)
+        {
+            refreshLiveData();
+        }
+
 
 
 

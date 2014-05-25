@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,8 @@ namespace DaLinkO
         public event ActiveBeansUpdatedHandler packsAreUpdated;
         public event NewSourceAddedHandler newSourceData;
 
+        
+
         //Primary public methods
         public void updateDataPacks(DR dIncoming)
         {
@@ -25,10 +28,19 @@ namespace DaLinkO
 
             if (tv == "1.00")
             {
+                //may need to add threading?? doesn't seem to improve anything.
+                //var thread = new Thread(
+                //    () => update1_00(dIncoming));
+                //thread.Start();
+
+                //alternatively use this, but still no improvement.
+                //Task.Factory.StartNew(() => update1_00(dIncoming));
 
                 update1_00(dIncoming);
+
             }
         }
+
         public void update1_00(DR bNew)
         {
             /*Adds the new data to the master active bean list
@@ -103,6 +115,7 @@ namespace DaLinkO
                 }
 
         }
+
         public DR reportActiveBeans()
         {
             return bActive;

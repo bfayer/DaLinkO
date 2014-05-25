@@ -30,7 +30,9 @@ namespace DaLinkO
 
         bool running;
         Thread runningThread;
-        //EventWaitHandle terminateHandle = new EventWaitHandle(false, EventResetMode.AutoReset); //for some reason one of the examples online for the pipeserver used this
+        //EventWaitHandle terminateHandle = new EventWaitHandle(false, EventResetMode.AutoReset); 
+        //for some reason one of the examples online for the pipeserver used this, when it's active though it severely limits 
+        //the rate at which new servers are created.
         public string PipeName { get; set; }
 
         void ServerLoop()
@@ -38,7 +40,6 @@ namespace DaLinkO
 
             while (running)
             {
-                
                 ProcessNextClient();
                 //terminateHandle.WaitOne();
             }
@@ -71,7 +72,13 @@ namespace DaLinkO
                 DR newbeans = new DR();
             using (TextReader reader = new StreamReader(pipeStream))  
                 {
-                newbeans = (DR)deserializer.Deserialize(reader); 
+                    try
+                    {
+                        newbeans = (DR)deserializer.Deserialize(reader);
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             activeBeans.updateDataPacks(newbeans);
             }
@@ -84,12 +91,10 @@ namespace DaLinkO
                     }
             }
 
-            
-            //ReportNewData(); 
-
                 pipeStream.Close();
                 pipeStream.Dispose();
                 //terminateHandle.Set();
+            
 
         }
 
@@ -97,40 +102,26 @@ namespace DaLinkO
         {
             try
             {
-                NamedPipeServerStream pipeStream = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 254);
+                NamedPipeServerStream pipeStream = new NamedPipeServerStream(PipeName, PipeDirection.InOut, -1);
                 pipeStream.WaitForConnection();
 
                 //Spawn a new thread for each request and continue waiting
-                Thread t = new Thread(ProcessClientThread);
-                t.Start(pipeStream);
- 
+                Task.Factory.StartNew(() => ProcessClientThread(pipeStream));
 
             }
             catch (Exception)
-            {//If there are no more avail connections (254 is in use already) then just keep looping until one is avail
+            {//if more than 254 in use this triggers
             }
         }
 
-        public event NewDataHandler RecievedNewData;
 
         public void CloseServer()
         {
             Stop();
-            //foreach (Delegate d in RecievedNewData.GetInvocationList())
-            //{
-            //    RecievedNewData -= (NewDataHandler)d;
-            //}
 
         }
 
-        private void ReportNewData()
-        {
-            if (RecievedNewData != null) // will be null if no subscribers
-            {
-                RecievedNewData();
-            }
 
-        }
 
         public String ProvideXMLinString()
         {

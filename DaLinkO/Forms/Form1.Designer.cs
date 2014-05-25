@@ -87,6 +87,7 @@
             this.vDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.beanElementBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.broadcastBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.timerUiFineRefresh = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourceLog)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBroadcastList)).BeginInit();
@@ -756,6 +757,11 @@
             // 
             this.broadcastBindingSource.DataSource = typeof(DaLinkO.Broadcast);
             // 
+            // timerUiFineRefresh
+            // 
+            this.timerUiFineRefresh.Interval = 50;
+            this.timerUiFineRefresh.Tick += new System.EventHandler(this.timerUiFineRefresh_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -865,6 +871,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn tDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn vDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btnGenerateSketch;
+        private System.Windows.Forms.Timer timerUiFineRefresh;
     }
 }
 
