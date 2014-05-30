@@ -84,6 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Broadcast.cs" />
+    <Compile Include="Forms\CodeGenerator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CodeGenerator.Designer.cs">
+      <DependentUpon>CodeGenerator.cs</DependentUpon>
+    </Compile>
     <Compile Include="CVRT.cs" />
     <Compile Include="DeviceConnection.cs" />
     <Compile Include="Forms\About.cs">
@@ -134,6 +140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Broadcast Connection Settings.resx">
       <DependentUpon>Broadcast Connection Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CodeGenerator.resx">
+      <DependentUpon>CodeGenerator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConstantPicker.resx">
       <DependentUpon>ConstantPicker.cs</DependentUpon>

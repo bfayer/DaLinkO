@@ -310,6 +310,18 @@ namespace DaLinkO
                 clicked.transmitClick();
             }
         }
+        private void btnGenerateSketch_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvBroadcastList.SelectedRows)
+            {
+                Broadcast selectedBroadcast = row.DataBoundItem as Broadcast;
+                if (selectedBroadcast != null)
+                {
+                    Form generateCode = new CodeGenerator();
+                    generateCode.Show();
+                }
+            }
+        }
 
         //Events and timer ticks
         private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -351,6 +363,8 @@ namespace DaLinkO
         {
             refreshLiveData();
         }
+
+
 
 
 

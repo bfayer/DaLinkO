@@ -480,13 +480,13 @@
             // 
             // btnGenerateSketch
             // 
-            this.btnGenerateSketch.Enabled = false;
             this.btnGenerateSketch.Location = new System.Drawing.Point(223, 522);
             this.btnGenerateSketch.Name = "btnGenerateSketch";
             this.btnGenerateSketch.Size = new System.Drawing.Size(174, 25);
             this.btnGenerateSketch.TabIndex = 20;
             this.btnGenerateSketch.Text = "Generate Arduino sketch";
             this.btnGenerateSketch.UseVisualStyleBackColor = true;
+            this.btnGenerateSketch.Click += new System.EventHandler(this.btnGenerateSketch_Click);
             // 
             // tabDebugPage
             // 
