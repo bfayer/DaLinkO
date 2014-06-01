@@ -15,6 +15,7 @@ namespace DaLinkO
     public delegate void NewDataHandler();  //when new data is recieved by the server
     public delegate void ActiveBeansUpdatedHandler(); //when the active bean manager has updated the master list
     public delegate void NewSourceAddedHandler(); //When a new data source has been added
+    //test
 
     public partial class Form1 : Form
     {
