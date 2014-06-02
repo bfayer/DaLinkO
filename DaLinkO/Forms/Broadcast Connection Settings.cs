@@ -57,7 +57,7 @@ namespace DaLinkO
             //triggerCheck();
             newChecker = true;
             broadcast = new Broadcast(form1);
-            TElement_Constant triggerElement = new TElement_Constant("trigger", CVRT.GetBytes("#"));
+            TElement_Constant triggerElement = new TElement_Constant("trigger", CVRT.getBytes("#"));
             broadcast.transmission.AddTElement(triggerElement);
             dgvTransmission.AutoGenerateColumns = false;
             this.dgvTransmission.DataSource = broadcast.transmission.TElementList;
@@ -312,7 +312,7 @@ namespace DaLinkO
         }
         private void btnCheckTransmission_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(CVRT.GetString(broadcast.transmission.ProvideTransmission));
+            MessageBox.Show(CVRT.getString(broadcast.transmission.ProvideTransmission));
             //MessageBox.Show(CVRT.GetIntAsString(broadcast.transmission.ProvideTransmission));
             this.UpdateTransDGV();
         }

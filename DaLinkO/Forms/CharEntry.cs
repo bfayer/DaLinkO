@@ -48,13 +48,13 @@ namespace DaLinkO.Forms
         {
             if (editing == false)
             {
-                this.constantElement = new TElement_Constant(tbConstantName.Text,CVRT.GetBytes(tbCharacterInput.Text));
+                this.constantElement = new TElement_Constant(tbConstantName.Text,CVRT.getBytes(tbCharacterInput.Text));
 
             }
             else
             {
                 constantElement.elementName = tbConstantName.Text;
-                constantElement.elementBytes = CVRT.GetBytes(tbCharacterInput.Text);
+                constantElement.elementBytes = CVRT.getBytes(tbCharacterInput.Text);
                 //this.constName = tbConstantName.Text;
                 //this.characters = CVRT.GetBytes(tbCharacterInput.Text);
             }

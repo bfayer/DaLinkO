@@ -10,7 +10,7 @@ namespace DaLinkO
 {
     public static class CVRT
     {
-        public static byte[] GetBytes(string str)
+        public static byte[] getBytes(string str)
         {
             //byte[] bytes = new byte[str.Length * sizeof(char)];
             //System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
@@ -18,7 +18,7 @@ namespace DaLinkO
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(str);
             return bytes;
         } //converts strings to byte arrays
-        public static string GetString(byte[] bytes)
+        public static string getString(byte[] bytes)
         {
 
             //char[] chars = new char[bytes.Length / sizeof(char)];
@@ -46,13 +46,13 @@ namespace DaLinkO
 
 
         } //converts byte arrays to strings
-        public static string GetIntAsString(byte[] bytes)
+        public static string getIntAsString(byte[] bytes)
         {
 
              int x = BitConverter.ToInt32(bytes, 0);
              return Convert.ToString(x);
         }
-        public static string ObjectToXMLString<T>(this T toSerialize)
+        public static string objectToXMLString<T>(this T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
             StringWriter textWriter = new StringWriter();
@@ -60,5 +60,13 @@ namespace DaLinkO
             xmlSerializer.Serialize(textWriter, toSerialize);
             return textWriter.ToString();
         } //Converts a Bean objects to XML string
+        public static string getDataTypeForArduino(TElement t)
+        {
+            string dataType="";
+            if (t.type == "System.Int32")
+            { dataType = "int"; }
+
+            return dataType;
+        }
     }
 }

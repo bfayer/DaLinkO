@@ -93,7 +93,7 @@ namespace DaLinkO
             }
             set { }
         }
-        public virtual string elementTextBytes { get { return CVRT.GetString(elementBytes); } set { } }
+        public virtual string elementTextBytes { get { return CVRT.getString(elementBytes); } set { } }
     }
 
     //C# Type	.Net type    	Signed? Bytes   Possible Values

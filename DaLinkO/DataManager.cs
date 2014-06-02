@@ -148,7 +148,7 @@ namespace DaLinkO
             /*
              * Converts the current master bean list to XML and spits it out in a string
              */
-            return CVRT.ObjectToXMLString(bActive);
+            return CVRT.objectToXMLString(bActive);
         }
 
     }

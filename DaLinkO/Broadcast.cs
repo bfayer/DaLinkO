@@ -138,7 +138,7 @@ namespace DaLinkO
         public void forceSendString(string outgoing)
         {
             
-            connection.ForceSendThings(CVRT.GetBytes(outgoing));
+            connection.ForceSendThings(CVRT.getBytes(outgoing));
             form1.updateConsole("sent:" + outgoing+Environment.NewLine);
         }//For sending console commands
         public void DeleteBroadcast()  //not sure if this is enough, maybe need to force dispsal?
