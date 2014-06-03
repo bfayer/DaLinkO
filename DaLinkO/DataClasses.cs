@@ -92,6 +92,6 @@ namespace DaLinkO
         [XmlAttribute]
         public string T { get; set; } //Data type
         [XmlElement]
-        public string V { get; set; }  //Value
+        public string V { get; set; }  //Value - will be int?
     }
 }
