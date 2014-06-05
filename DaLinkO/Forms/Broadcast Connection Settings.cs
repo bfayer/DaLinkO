@@ -165,8 +165,11 @@ namespace DaLinkO
             {
                 connectionType = 0;
                 baud = (int)cbUSBBaud.SelectedItem;
-                port = cbUSBPort.SelectedItem.ToString();
+                if (cbUSBPort.SelectedItem != null)
+                {
 
+                    port = cbUSBPort.SelectedItem.ToString();
+                }
             }
             else if (rbWireless.Checked == true)
             {
@@ -230,20 +233,27 @@ namespace DaLinkO
 
             triggerCheck();
             
-            Trigger newTrigger = new Trigger(broadcast,trigger,trigInterval); 
-            //creates a new connection every time
-            connectionCheck();
-            
-            DeviceConnection newConnection = new DeviceConnection(connectionType, port, baud, broadcast, form1);
-            autoConnect = cbAutoCnctOnDataVis.Checked;
+
 
             if (name == "") //cancels the save op if there is no name
             {
                 MessageBox.Show("Broadcasts must have names!");
             }
+            else if (cbUSBPort.SelectedItem == null)
+            {
+                MessageBox.Show("Select a port");
+            }
             else
             {
                 broadcast.name = name;
+
+                Trigger newTrigger = new Trigger(broadcast, trigger, trigInterval);
+                //creates a new connection every time
+                connectionCheck();
+
+                DeviceConnection newConnection = new DeviceConnection(connectionType, port, baud, broadcast, form1);
+                autoConnect = cbAutoCnctOnDataVis.Checked;
+
 
                 if (newChecker == true)//For new broadcasts
                 {

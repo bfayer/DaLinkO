@@ -92,9 +92,21 @@ Created: {3}
             string variableText = "";
 
             //the below loop isn't functional yet 
-            foreach (TElement t in broadcast.transmission.TElementList)
-            {
-                String.Concat(variableText, CVRT.getDataTypeForArduino(t) + " " + t.elementName + " = " + t.elementValueAsText + ";" + Environment.NewLine);
+            if (broadcast.transmission.TElementList[0].elementValueAsText == "#")
+                
+                {
+                foreach (TElement t in broadcast.transmission.TElementList)
+                {
+                    if (t.type == "byte[]" || t.elementName == "trigger")
+                    {
+                        variableText = String.Concat(variableText, CVRT.getDataTypeForArduino(t) + " " + t.elementName + "=" + t.elementValueAsText + ";" + Environment.NewLine);
+                    }
+                    else
+                    {
+
+                        variableText = String.Concat(variableText, CVRT.getDataTypeForArduino(t) + " " + t.elementName + ";" + Environment.NewLine);
+                    }
+                }
             }
 
             return variableText;

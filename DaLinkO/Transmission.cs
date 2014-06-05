@@ -126,7 +126,7 @@ namespace DaLinkO
         {
             get
             {
-                 return "byte[]"; 
+                 return "byte"; 
 
             }
             set { }
