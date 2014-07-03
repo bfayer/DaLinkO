@@ -60,7 +60,7 @@ namespace DaLinkO
             xmlSerializer.Serialize(textWriter, toSerialize);
             return textWriter.ToString();
         } //Converts a Bean objects to XML string
-        public static string getDataTypeForArduino(TElement t)
+        public static string getDataTypeForArduino(TElement t) //get's the data type for use in automatic code generation for arduino
         {
                     // arduino  generic   C#.Net type    	Signed? Bytes   Possible Values
                     //  int     int	        System.Int32	Yes 	4	    -2147483648 to 2147483647
