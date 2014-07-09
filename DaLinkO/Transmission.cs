@@ -53,7 +53,18 @@ namespace DaLinkO
 
             }
 
-        }   
+        }
+
+
+        public int GetByteCount()
+        {
+            int x = 0;
+            foreach (TElement element in this.TElementList)
+            {
+                x += element.numberOfBytes;
+            }
+            return x;
+        }
 
     }
 

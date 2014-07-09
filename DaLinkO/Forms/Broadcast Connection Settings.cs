@@ -421,14 +421,9 @@ namespace DaLinkO
         {
 
             this.dgvTransmission.Rows[e.RowIndex].Cells[0].Value
-                 = (e.RowIndex + 1).ToString();
-            int x = 0;
-            foreach (DataGridViewRow row in this.dgvTransmission.Rows)
-            {
-                x += Convert.ToInt32(row.Cells["Bytes"].Value);
-            }
+                 = (e.RowIndex + 1).ToString(); //creates an index number on the left hand column for referencing elements
 
-            tbTotalBytes.Text = x.ToString();
+            tbTotalBytes.Text = broadcast.transmission.GetByteCount().ToString();
 
         }
 

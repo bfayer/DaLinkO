@@ -25,43 +25,43 @@ namespace DaLinkO
             cbProgramType.Items.Add("Recieve data");
             cbProgramType.SelectedIndex = 0;
 
-            updateCode();
+
+                         updateCode();
+
         }
 
         private void updateCode()
         {
-            if (cbDeviceType.SelectedIndex == 0)
-            {
-                if (cbProgramType.SelectedIndex == 0)
-                {
-                    try { codeArduinoRead(); }
-                    catch (Exception e)
-                    {
-                        rtbCode.Clear();
-                        rtbCode.Text = e.ToString();
+            if (broadcast.transmission.TElementList[0].elementValueAsText == "#")//checks to see that there is a transmission byte, is this necessary? should probably just do it when launching the form
+            {    
 
+                if (cbDeviceType.SelectedIndex == 0)
+                {
+                    if (cbProgramType.SelectedIndex == 0)
+                    {
+                        try { codeArduinoRead(); }
+                        catch (Exception e)
+                        {
+                            rtbCode.Clear();
+                            rtbCode.Text = e.ToString();
+
+                        }
                     }
                 }
             }
+            else
+            {
+                rtbCode.Text = "transmission is not compatible without the default # sign initiator";
+            }
+
         }
 
-        private void codeArduinoRead()
-        {
-            string header = codeHeader("Arduino UNO", "Read"); 
-            string variables = codeVariables();
-            string setup = codeSetup();
-            string Main = @"main";
-
-            rtbCode.Text = String.Format(@"{0}
-
-{1}
-
-{2}
-
-{3}
-", header, variables, setup, Main);
-        }
-
+        /// <summary>
+        /// Generates universal code header
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="program"></param>
+        /// <returns></returns>
         private string codeHeader(string device, string program)
         {
             string headerText = String.Format(@"/*
@@ -73,7 +73,94 @@ Created: {3}
 
             return headerText;
         }
-        private string codeSetup()
+
+        //Arduino Uno code generation specifics
+
+        /// <summary>
+        /// initializes the generation of code and prints it in the text box
+        /// </summary>
+        private void codeArduinoRead()
+        {
+            string header = codeHeader("Arduino UNO", "Read");
+            string variables = codeVariables_ArduinoUno();
+            string int32Union = int32unions_ArduinoUno();
+            string setup = codeSetup_ArduinoUno();
+            string Main = @"main";
+            string byteBuf = byteBuffer_ArduinoUno();
+
+            rtbCode.Text = String.Format(@"{0}
+
+{1}
+{2}
+
+{3}
+
+{4}
+
+{5}
+", header, byteBuf, variables, int32Union, setup, Main);
+        }
+
+
+        private string byteBuffer_ArduinoUno()
+        {
+            string byteBuffer = "byte buffer[" + broadcast.transmission.GetByteCount().ToString() + "];"+Environment.NewLine;
+            return byteBuffer;
+
+        }
+        /// <summary>
+        /// generates a list of undefined variables for arduino sketches
+        /// </summary>
+        /// <returns></returns>
+        private string codeVariables_ArduinoUno()
+        {
+
+            string variableText = "";
+
+            //there may be a bug in this loop, i had a note saying there was but i can't get it to break now.
+            foreach (TElement t in broadcast.transmission.TElementList)
+            {
+                if (t.type == "byte[]" || t.elementName == "trigger")
+                {
+                    variableText = String.Concat(variableText, CVRT.getDataTypeForArduinoUno(t) + " " + t.elementName + "=" + t.elementValueAsText + ";" + Environment.NewLine);
+                }
+                else
+                {
+
+                    variableText = String.Concat(variableText, CVRT.getDataTypeForArduinoUno(t) + " " + t.elementName + ";" + Environment.NewLine);
+                }
+            }
+            
+
+            return variableText;
+        }
+        /// <summary>
+        /// returns the code for an int32 union if there is an integer in the broadcast
+        /// </summary>
+        /// <returns></returns>
+        private string int32unions_ArduinoUno()
+        {
+            string unionCode="";
+
+            foreach (TElement t in broadcast.transmission.TElementList)
+            {
+                if (t.type == "System.Int32")
+                {
+                    unionCode = @"
+union ArrayToInt32 {
+  int32_t integer;
+  byte array[4];
+};" + Environment.NewLine;
+                }
+            }
+
+            return unionCode;
+        }
+        /// <summary>
+        /// The setup block for arduino uno sketches
+        /// </summary>
+        /// <returns></returns>
+        private string codeSetup_ArduinoUno()
         {
             string setupText = String.Format(@"void setup()
 {{
@@ -82,36 +169,92 @@ Created: {3}
   Serial.println(""Connected"");
 
 }}", broadcast.connection.baud.ToString());
-            
+
 
             return setupText;
-        }
-        private string codeVariables()
-        {
-
-            string variableText = "";
-
-            //the below loop isn't functional yet 
-            if (broadcast.transmission.TElementList[0].elementValueAsText == "#")
-                
-                {
-                foreach (TElement t in broadcast.transmission.TElementList)
-                {
-                    if (t.type == "byte[]" || t.elementName == "trigger")
-                    {
-                        variableText = String.Concat(variableText, CVRT.getDataTypeForArduino(t) + " " + t.elementName + "=" + t.elementValueAsText + ";" + Environment.NewLine);
-                    }
-                    else
-                    {
-
-                        variableText = String.Concat(variableText, CVRT.getDataTypeForArduino(t) + " " + t.elementName + ";" + Environment.NewLine);
-                    }
-                }
-            }
-
-            return variableText;
         }
 
 
     }
 }
+
+
+
+////the health level at any point in time
+//int hp; 
+//int preHP; //was used when trying to figure out if there was a change in hp since last transmition 
+
+////stuff used for input from pc
+//byte buffer[8] ;
+//int pointer = 0; 
+//byte inByte = 0;  
+//int healthFraction=0;
+
+//// Set up outputs, and start at assumed 100% hp
+
+//// union for converting byte array to int32, 4 bytes in
+//union ArrayToInt32 {
+//  int32_t integer;
+//  byte array[4];
+//};
+
+
+
+
+//void setup()
+//{
+
+//  Serial.begin(115200);
+//  Serial.println("Connected");
+//  //hp = 100;
+
+//  Serial.flush();// Give reader a chance to see the output.
+//}
+
+
+//void loop()
+//{
+//  ArrayToInt32 hp;
+//  ArrayToInt32 hpMax;
+//  // check serial port for input from pc
+//  if (Serial.available() >0) {
+//    // read the incoming byte:
+//    inByte = Serial.read();
+//    delay(10);
+//    // The "#" sign incoming starts filling the serial read buffer array, otherwise nothing happens
+//    if (inByte == '#') {
+//      while (pointer < 8) { // accumulate chars in the buffer
+//        buffer[pointer] = Serial.read(); 
+//        pointer++;
+//      }
+//      hp.array[0]=buffer[0];
+//      hp.array[1]=buffer[1];
+//      hp.array[2]=buffer[2];
+//      hp.array[3]=buffer[3];
+//      hpMax.array[0]=buffer[4];
+//      hpMax.array[1]=buffer[5];
+//      hpMax.array[2]=buffer[6];
+//      hpMax.array[3]=buffer[7];
+      
+//      healthFraction = 1000*hp.integer/hpMax.integer;
+//      //need to change this to output something like
+//      //int1=xxx
+//      //int2=xxx
+//      //bool3=xxx
+      
+//        Serial.println(healthFraction);
+//      }   
+      
+ 
+//      pointer=0;  //resets the pointer for the serial reader
+
+//      Serial.flush();
+//    } 
+//}
+
+
+
+
+
+
+

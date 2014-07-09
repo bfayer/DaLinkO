@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Deployment.Application;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,11 +19,9 @@ namespace DaLinkO
             InitializeComponent();
             //string version; 
 
-            if(ApplicationDeployment.IsNetworkDeployed)
-            {
-                this.label1.Text = "DaLinkO alpha V" + ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-            else { this.label1.Text = "testing build, will not show isntall version unless deployed"; }
+            
+            this.label1.Text = "DaLinkO alpha v" + Assembly.GetExecutingAssembly().GetName().Version.ToString(); ;
+
 
 
             LinkLabel.Link link = new LinkLabel.Link();

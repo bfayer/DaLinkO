@@ -37,6 +37,7 @@
             // 
             // cbDeviceType
             // 
+            this.cbDeviceType.Enabled = false;
             this.cbDeviceType.FormattingEnabled = true;
             this.cbDeviceType.Location = new System.Drawing.Point(81, 13);
             this.cbDeviceType.Name = "cbDeviceType";
@@ -56,6 +57,7 @@
             // 
             // cbProgramType
             // 
+            this.cbProgramType.Enabled = false;
             this.cbProgramType.FormattingEnabled = true;
             this.cbProgramType.Location = new System.Drawing.Point(312, 13);
             this.cbProgramType.Name = "cbProgramType";
