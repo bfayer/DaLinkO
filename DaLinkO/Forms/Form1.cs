@@ -327,7 +327,7 @@ namespace DaLinkO
         //Events and timer ticks
         private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-         //   if (MessageBox.Show("Do you want to save your active profile?", "BeanCaster",
+         //   if (MessageBox.Show("Do you want to save your active profile?", "dalinko",
          //MessageBoxButtons.YesNo) == DialogResult.Yes)
          //   {
          //       // Cancel the Closing event from closing the form.

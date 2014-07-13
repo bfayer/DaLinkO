@@ -81,30 +81,58 @@ Created: {3}
         /// </summary>
         private void codeArduinoRead()
         {
-            string header = codeHeader("Arduino UNO", "Read");
-            string variables = codeVariables_ArduinoUno();
-            string int32Union = int32unions_ArduinoUno();
-            string setup = codeSetup_ArduinoUno();
-            string Main = @"main";
-            string byteBuf = byteBuffer_ArduinoUno();
-
+            string header = codeHeader("Arduino UNO", "Read"); //header tag
+            string variables = codeVariables_ArduinoUno(); 
+            string int32Union = int32unions_ArduinoUno(); //unions if there are ints
+            string setup = codeSetup_ArduinoUno(); // setup code for serial port
+            string byteBuf = byteBuffer_ArduinoUno(); //standard byte buffer stuff (measures broadcast length and sizes accordingly.)
+            string unionLoopCallouts = mainLoopUnions_ArduinoUno(); //calls union names in loop
+            string intPopulator = intPopulator_ArduinoUno();
             rtbCode.Text = String.Format(@"{0}
 
+//read buffer stuff
 {1}
+
+//Variables
 {2}
 
 {3}
 
 {4}
-
+void loop()
+{{
 {5}
-", header, byteBuf, variables, int32Union, setup, Main);
+  if (Serial.available() >0) {{
+    inByte = Serial.read();
+    delay(10);
+    
+    if (inByte == '#') // An incoming ""#"" sign byte triggers the program to start reading sequencial bytes into the buffer
+        {{
+            while (pointer < {6}) 
+            {{
+                buffer[pointer] = Serial.read(); 
+                pointer++;
+            }}
+{7}
+        //your code here
+        //example: Serial.println(one of your varialbles);
+
+        }}   
+      
+ 
+      pointer=0;  //resets the pointer for the serial reader
+
+      Serial.flush();
+    }} 
+}}", header, byteBuf, variables,int32Union, setup, unionLoopCallouts, Convert.ToString(broadcast.transmission.GetByteCount()-1),intPopulator);
         }
 
 
         private string byteBuffer_ArduinoUno()
         {
-            string byteBuffer = "byte buffer[" + broadcast.transmission.GetByteCount().ToString() + "];"+Environment.NewLine;
+            string byteBuffer = @"byte buffer[" + broadcast.transmission.GetByteCount().ToString() + @"];
+int pointer = 0; 
+byte inByte = 0;";
             return byteBuffer;
 
         }
@@ -120,12 +148,10 @@ Created: {3}
             //there may be a bug in this loop, i had a note saying there was but i can't get it to break now.
             foreach (TElement t in broadcast.transmission.TElementList)
             {
-                if (t.type == "byte[]" || t.elementName == "trigger")
+                if (t.type != "byte")// || t.elementName == "trigger") //don't really want to use trigger in case someone uses that name in their code but you can't change anything to be type byte[]
                 {
-                    variableText = String.Concat(variableText, CVRT.getDataTypeForArduinoUno(t) + " " + t.elementName + "=" + t.elementValueAsText + ";" + Environment.NewLine);
-                }
-                else
-                {
+                    //variableText = String.Concat(variableText, CVRT.getDataTypeForArduinoUno(t) + " " + t.elementName + "=" + t.elementValueAsText + ";" + Environment.NewLine);
+
 
                     variableText = String.Concat(variableText, CVRT.getDataTypeForArduinoUno(t) + " " + t.elementName + ";" + Environment.NewLine);
                 }
@@ -144,7 +170,7 @@ Created: {3}
 
             foreach (TElement t in broadcast.transmission.TElementList)
             {
-                if (t.type == "System.Int32")
+                if (t.type == "System.Int32")// this does not concat because you only need 1 arraytoint32 union for all of them, they are declared individually in the main loop
                 {
                     unionCode = @"
 union ArrayToInt32 {
@@ -168,12 +194,52 @@ union ArrayToInt32 {
   Serial.begin({0});
   Serial.println(""Connected"");
 
+  //include your setup code here
+
 }}", broadcast.connection.baud.ToString());
 
 
             return setupText;
         }
+        private string mainLoopUnions_ArduinoUno()
+        {
+            string unionLoops = "";
+            foreach (TElement t in broadcast.transmission.TElementList)
+            {
+                if (t.type == "System.Int32")
+                {
+                    unionLoops = string.Concat(unionLoops, "    ArrayToInt32 " +t.elementName+ "U;" + Environment.NewLine);
+                }
+            }
 
+            return unionLoops;
+        }
+        private string intPopulator_ArduinoUno()
+        {
+            string populatedInts ="";
+            int bufferCount = 0;
+            
+            foreach (TElement t in broadcast.transmission.TElementList)
+            {
+                
+                if (t.type == "System.Int32")
+                {
+                    int x = 0;
+                    while (x < 4)
+                    {
+                    populatedInts = String.Concat(populatedInts, "            "+ t.elementName + "U.array[" + Convert.ToString(x) + "] = buffer[" + Convert.ToString(bufferCount) +"];"  + Environment.NewLine);
+                    x++;
+                    bufferCount++;
+
+                    }
+                    populatedInts = String.Concat(populatedInts, "            "+ t.elementName + "=" + t.elementName + "U.integer;" + Environment.NewLine);
+                }
+                
+            }
+
+
+            return populatedInts;
+        }
 
     }
 }
