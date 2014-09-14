@@ -121,6 +121,8 @@ namespace DaLinkO.Forms
                     if (selectedDataElement.T == "System.Int32")
                     {
                         this.dataElement = new TElement_Int32(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.Boolean")
@@ -169,6 +171,7 @@ namespace DaLinkO.Forms
                         this.dataElement = new TElement_UInt64(tbDataName.Text, selectedDataElement);
                         this.DialogResult = DialogResult.OK;
                     }
+                        // single and decimal don't seem to work out properly so for now I'm just going to leave them out.
                     //else if (selectedDataElement.T == "System.Single")
                     //{
                     //    this.dataElement = new TElement_Single(tbDataName.Text, selectedDataElement);

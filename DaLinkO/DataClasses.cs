@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DaLinkO
 {
 
-
+    [Serializable]
     [XmlRoot("DR")]
     public class DR
     {
@@ -20,7 +20,7 @@ namespace DaLinkO
         public string TV { get; set; }
 
     }
-
+    [Serializable]
     public class DP 
     {
         public DP()
@@ -75,14 +75,14 @@ namespace DaLinkO
                 
             }
         }
-        
-        private readonly List<DE> myElementList = new List<DE>();
+
+        public List<DE> myElementList = new List<DE>(); //should be private read only? works for the DR class..
         [XmlElement("DE", typeof(DE))]
         public List<DE> dataElement { get { return myElementList; } }
 
     }
 
-
+    [Serializable]
     public class DE //Data Element
     {
         public DE() { }

@@ -88,6 +88,7 @@
             this.beanElementBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.broadcastBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timerUiFineRefresh = new System.Windows.Forms.Timer(this.components);
+            this.testButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourceLog)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBroadcastList)).BeginInit();
@@ -456,6 +457,7 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.White;
+            this.splitContainer1.Panel1.Controls.Add(this.testButton);
             this.splitContainer1.Panel1.Controls.Add(this.btnGenerateSketch);
             this.splitContainer1.Panel1.Controls.Add(this.btnEditBroadcast);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
@@ -762,6 +764,16 @@
             this.timerUiFineRefresh.Interval = 50;
             this.timerUiFineRefresh.Tick += new System.EventHandler(this.timerUiFineRefresh_Tick);
             // 
+            // testButton
+            // 
+            this.testButton.Location = new System.Drawing.Point(403, 521);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(120, 25);
+            this.testButton.TabIndex = 21;
+            this.testButton.Text = "test";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.Click += new System.EventHandler(this.testButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -775,6 +787,7 @@
             this.Name = "Form1";
             this.Text = "DaLinkO (alpha)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourceLog)).EndInit();
@@ -872,6 +885,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn vDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btnGenerateSketch;
         private System.Windows.Forms.Timer timerUiFineRefresh;
+        private System.Windows.Forms.Button testButton;
     }
 }
 

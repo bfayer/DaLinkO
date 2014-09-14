@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,20 +29,185 @@ namespace DaLinkO
 
             if (tv == "1.00")
             {
-                //may need to add threading?? doesn't seem to improve anything.
-                //var thread = new Thread(
-                //    () => update1_00(dIncoming));
-                //thread.Start();
 
-                //alternatively use this, but still no improvement.
-                //Task.Factory.StartNew(() => update1_00(dIncoming));
-
-                update1_00(dIncoming);
-
+                //update1_00(dIncoming);
+                AddXML_1(dIncoming);
             }
         }
 
-        public void update1_00(DR bNew)
+        public void AddXML_1(DR bNew)
+        {
+            //var merged = new List<DP>(bActive.dataPacks);
+            //merged.AddRange(bNew.dataPacks.Where(p2 =>
+            //    bActive.dataPacks.All(p1=>p1.Src != p2.Src)));
+            // need to make the bActive datapack equal to merged now.
+                //private DR DRforThreading
+            lock (((ICollection)bActive.dataPacks).SyncRoot)
+            {
+                foreach (var newPack in bNew.dataPacks) //for each data pack in the new packlist
+                {
+                    //query all of the existing packs that match by name and version
+                    if (bActive.dataPacks.Count != 0)
+                    {
+                        var activePackQuery =
+                            from a in bActive.dataPacks
+                            where a.Src == newPack.Src && a.v == newPack.v
+                            select a;
+                        if (activePackQuery.Count() == 0)//if none of the existing packs matched the new pack then add it
+                        {
+
+                            bActive.dataPacks.Add(newPack);
+                        }
+                        else //if any of the existing packs matched the new pack then try to update their elements
+                        {
+
+                            foreach (var activePack in activePackQuery) //for each existing pack that was found to match the current new pack
+                            {
+                                foreach (var newElement in newPack.dataElement) //For each data element on the specific new pack 
+                                {
+                                    //MessageBox.Show("check");
+                                    //query the existing pack's dataElement list to see if there are duplicates with the new datapack's dataElement list
+                                    var elementQuery =
+                                        from b in activePack.dataElement
+                                        where b.N == newElement.N
+                                        select b;
+                                    if (elementQuery.Count() == 0)//if the element didn't already exist add it to the active pack
+                                    {
+                                        activePack.dataElement.Add(newElement);
+                                        newSourceData();
+                                    }
+                                    else //if the element did already exist update all of them
+                                    {
+
+                                        foreach (var matchingElement in elementQuery) //for each element that existed already update the value
+                                        {
+                                            matchingElement.V = newElement.V;
+                                        }
+                                    }
+
+                                    activePack.LastHeardFrom = DateTime.Now; //refreshes the lastheard from variable for the updated active pack
+
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        bActive.dataPacks.Add(newPack); //if no packs exist just add the new one
+                        newSourceData();
+                    }
+
+
+                }
+
+                if (packsAreUpdated != null) // global event for data updated, will be null if no subscribers, 
+                {
+                    packsAreUpdated();  //global trigger for packs are updated, may be depreciated now that im doing it by passing the objects rather than events
+                }
+            }
+        }
+
+        public void reattach(Transmission loadedTransmission)
+        {
+            foreach (TElement t in loadedTransmission.TElementList)
+            {
+
+                //if (bActive.dataPacks.Count != 0)
+                //{
+                if (t.elementName != "trigger")
+                {
+
+                    DR tempDR = new DR();
+                    DP tempDP = new DP();
+                    DE tempDE = new DE();
+
+                    tempDE.N = t.linkedElement.N;
+                    tempDE.T = t.linkedElement.T;
+                    tempDE.V = t.linkedElement.V;
+
+                    tempDP.LastHeardFrom = DateTime.Now;
+                    tempDP.Src = t.elementSourceName;
+                    tempDP.v = t.modversion;
+                    t.linkedElement = tempDE;
+                    tempDP.dataElement.Add(tempDE);
+                    tempDR.dataPacks.Add(tempDP);
+                    tempDR.TV = "1.00";
+                    AddXML_1(tempDR);
+
+
+                    //var activePackQuery =
+                    //    from a in bActive.dataPacks
+                    //    where a.Src == t.elementSourceName && t.modversion == a.v //should include version checking
+                    //    select a;
+                    //if (activePackQuery.Count() == 0)//if none of the existing packs matched the new pack then add it
+                    //{
+                    //    DP tempPack = new DP();//create new datapack
+
+                    //    tempPack.Src = t.elementSourceName; //make the name equal the new source name
+                    //    tempPack.v = t.modversion;
+                    //    tempPack.LastHeardFrom = DateTime.Now;
+                        
+                    //    tempPack.dataElement.Add(t.linkedElement); 
+                        
+                    //    bActive.dataPacks.Add(tempPack);
+                    //    newSourceData();
+                    //}
+
+                    //else //if any of the existing packs matched the new pack then try to update their elements
+                    //{
+
+                    //    foreach (var activePack in activePackQuery) //for each existing pack that was found to match the current new pack
+                    //    {
+                    //        foreach (var newElement in newPack.dataElement) //For each data element on the specific new pack 
+                    //        {
+                    //            //MessageBox.Show("check");
+                    //            //query the existing pack's dataElement list to see if there are duplicates with the new datapack's dataElement list
+                    //            var elementQuery =
+                    //                from b in activePack.dataElement
+                    //                where b.N == newElement.N
+                    //                select b;
+                    //            if (elementQuery.Count() == 0)//if the element didn't already exist add it to the active pack
+                    //            {
+                    //                activePack.dataElement.Add(newElement);
+                    //                newSourceData();
+                    //            }
+                    //            else //if the element did already exist update all of them
+                    //            {
+
+                    //                foreach (var matchingElement in elementQuery) //for each element that existed already update the value
+                    //                {
+                    //                    matchingElement.V = newElement.V;
+                    //                }
+                    //            }
+
+                    //            activePack.LastHeardFrom = DateTime.Now; //refreshes the lastheard from variable for the updated active pack
+
+                    //        }
+
+                    //    }
+                    //}
+                    //}
+                    //else
+                    //{
+                    //    bActive.dataPacks.Add(newPack); //if no packs exist just add the new one
+                    //    newSourceData();
+                    //}
+
+
+                }
+            }
+
+            //if (packsAreUpdated != null) // will be null if no subscribers
+            //{
+            //    packsAreUpdated();  //global trigger for packs are updated, may be depreciated now that im doing it by passing the objects rather than events
+            //}
+
+
+        }
+
+
+        public void update1_00(DR bNew)//
         {
             /*Adds the new data to the master active bean list
              * There is FOR SURE a better way to do this... 
@@ -120,7 +286,7 @@ namespace DaLinkO
         {
             return bActive;
         }
-        public void clearPacls()
+        public void clearPacks()
         {
             //simply clearing the packs messes with FORM1 source datagridview because of the way the last-updated variable works
             //need to eventually fix this by moving the lastupdated variable to the packs rather than calculating it in form1
@@ -143,7 +309,7 @@ namespace DaLinkO
             int count = bActive.dataPacks.Count();
             return count;
         }
-        public string activeBeansToString()
+        public string activeBeansToString() //is this really dead? I think it's used in the debugg screen
         {
             /*
              * Converts the current master bean list to XML and spits it out in a string

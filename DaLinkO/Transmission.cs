@@ -8,11 +8,15 @@ using System.Windows.Forms;
 
 namespace DaLinkO
 {
+    [Serializable]
     public class Transmission
     {
+        [Serializable]
+        public class TElementBindingList<T> : BindingList<T>
+        { }
 
-        public BindingList<TElement> TElementList = new BindingList<TElement>();
-        //BindingList<Broadcast> Broadcasts = new BindingList<Broadcast>();
+        public TElementBindingList<TElement> TElementList = new TElementBindingList<TElement>();
+        
         public Transmission()
         {
             
@@ -21,7 +25,17 @@ namespace DaLinkO
 
         //List management functions
 
+        public void ReattachElements()
+        {
+            foreach (TElement t in TElementList)
+            {
+                //Calls a method in the datamanger that replaces the TElement objects with the new ones by name
+                //OR maybe it creates the 
+                
+                
 
+            }
+        }
         public void AddTElement(TElement te)
         {
             this.TElementList.Add(te);
@@ -67,11 +81,12 @@ namespace DaLinkO
         }
 
     }
-
+    [Serializable]
     public class TElement
     {
         public DE linkedElement = new DE();
-
+        public string elementSourceName { get; set; }
+        public string modversion { get; set; }
         public virtual string elementName { get; set; }
         public virtual byte[] elementBytes { get; set; }
         public virtual string elementValueAsText
@@ -122,7 +137,7 @@ namespace DaLinkO
     //decimal	System.Decimal	Yes	    12	    Approximately ±1.0 x 10-28 to ±7.9 x 1028 with 28 or 29 significant figures
     //char	    System.Char	    N/A	    2	    Any Unicode character (16 bit)
      
-
+    [Serializable]
     public class TElement_Constant : TElement
     {
         public TElement_Constant(string name, byte[] BytesIn)//overload for Constants
@@ -164,6 +179,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Int32:TElement
     {
         public TElement_Int32(string name, DE element) 
@@ -221,6 +237,7 @@ namespace DaLinkO
             set{} 
         }
     }
+    [Serializable]
     public class TElement_SByte : TElement //for some reason elementBytes is spitting out two bytes for this
     {
         public TElement_SByte(string name, DE element)
@@ -288,6 +305,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Byte : TElement
     {
         public TElement_Byte(string name, DE element)
@@ -401,6 +419,7 @@ namespace DaLinkO
     //        set { }
     //    }
     //}
+    [Serializable]
     public class TElement_Char : TElement
     {
         public TElement_Char(string name, DE element)

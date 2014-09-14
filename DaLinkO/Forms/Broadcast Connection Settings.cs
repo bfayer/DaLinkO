@@ -251,7 +251,7 @@ namespace DaLinkO
                 //creates a new connection every time
                 connectionCheck();
 
-                DeviceConnection newConnection = new DeviceConnection(connectionType, port, baud, broadcast, form1);
+                DeviceConnection newConnection = new DeviceConnection(connectionType, port, baud, broadcast);
                 autoConnect = cbAutoCnctOnDataVis.Checked;
 
 

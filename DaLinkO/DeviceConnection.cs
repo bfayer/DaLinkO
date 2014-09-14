@@ -8,11 +8,12 @@ using System.Windows.Forms;
 
 namespace DaLinkO
 {
+    [Serializable]
     public class DeviceConnection :IDisposable
     {
-        SerialPort _mySerialPort;
+        [NonSerialized]SerialPort _mySerialPort;
         public bool isConnected;
-        public Form1 form1;
+        [NonSerialized]public Form1 form1;
         string RxString;
         Broadcast parentBroadcast;
         public int connectionType;
@@ -21,20 +22,26 @@ namespace DaLinkO
         private bool _disposed;
 
 
-        public DeviceConnection(int ct, string Port, int Baud, Broadcast b, Form1 f)
+        public DeviceConnection(int ct, string Port, int Baud, Broadcast b)
         {
             isConnected = false;
             connectionType=ct;
-            form1 = f;
+            parentBroadcast = b;
+            form1 = b.form1;
             port = Port;
             baud = Baud;
+            SetupSerialPort();
+            
+            _disposed = false;
+        } //USB connection constructor
+
+        public void SetupSerialPort()
+        {
             _mySerialPort = new SerialPort();
 
             _mySerialPort.PortName = port;
             _mySerialPort.BaudRate = baud;
-            parentBroadcast = b;
-            _disposed = false;
-        } //USB connection constructor
+        }
 
         //Primary public methods
         public void TriggeredSendThings(byte[] toSend)

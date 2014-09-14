@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DaLinkO
 {
-   
-    public class Broadcast
+   [Serializable]
+    public class Broadcast// : ISerializable
     {
 
         public string name { get; set; }
-        private string CInfo;// 0 = USB, 1 = Wireless
+        private string CInfo;//Text for main form to display connection type,  0 = USB, 1 = Wireless
         public Trigger trigger;
         public DeviceConnection connection;
         public Transmission transmission;
@@ -23,7 +24,7 @@ namespace DaLinkO
         public bool autoConnect;
         private string ConnectionStatusText; //
         public bool isSelected; //when selected is true it allows reporting to the main windows tbConsole
-        public Form1 form1;
+        [NonSerialized]public Form1 form1;
         
         private bool TransmitCheck; //allows transmission or not
         private string buttonConnectText; //text for the connect/disconnect button
@@ -154,15 +155,31 @@ namespace DaLinkO
             connection.Disconnect();
         }
 
+        //protected Broadcast(SerializationInfo info, StreamingContext context)
+        //{
+        //    name = info.GetString("name");
+        //    CInfo = info.GetString("connectionInfo");
+            
+        //}
+
+        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        //{
+        //    info.AddValue("name", name);
+        //    info.AddValue("connectionInfo", CInfo);
+            
+
+        //}
+
     }
 
+    [Serializable]
     public class Trigger : IDisposable
     {
 
         public int triggerType;
         private Broadcast parentBroadcast;
         public int interval { get; set; }
-        Timer TriggerIntervalTimer;
+        [NonSerialized]Timer TriggerIntervalTimer;
         private bool _disposed;
 
         public Trigger(Broadcast pBroadcast, int trigType,int tick)

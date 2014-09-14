@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,23 +18,40 @@ namespace DaLinkO
     public delegate void ActiveBeansUpdatedHandler(); //when the active bean manager has updated the master list
     public delegate void NewSourceAddedHandler(); //When a new data source has been added
     
-
+    
     public partial class Form1 : Form
     {
 
         public DataManager activePacks = new DataManager();
         PipeServer myPipeServer;
-        
-        BindingList<Broadcast> broadcasts = new BindingList<Broadcast>();
-        BindingSource PackBind;
-        BindingSource ItemBind;
+
+        //broadcast list binding list as it's own class to allow serialization
+        [Serializable]
+        public class BroadcastBindingList<T> : BindingList<T>
+        { }
+        BroadcastBindingList<Broadcast> broadcasts = new BroadcastBindingList<Broadcast>();
+
+        BindingSource PackBindForSourceDGV;
+        BindingSource ItemBindForLiveDataView;
         Broadcast selectedBroadcast;
+        
+        //persistant data stuff
+        const string SaveFile = "Broadcasts.bin";
+        static string systemPath = System.Environment.
+                             GetFolderPath(
+                                 Environment.SpecialFolder.CommonApplicationData
+                             );
+        string saveFolderPath = System.IO.Path.Combine(systemPath, "DaLinkO");
+        string saveFilePath = System.IO.Path.Combine(systemPath, "DaLinkO",SaveFile);
+
+
+
 
         public Form1()
         {
             
-            
-            activePacks.newSourceData += new NewSourceAddedHandler(updateSourceDGV); 
+            activePacks.newSourceData += new NewSourceAddedHandler(updateSourceDGV);
+            //activePacks.newSourceData += new NewSourceAddedHandler(); 
             InitializeComponent();
 
             myPipeServer = new PipeServer(activePacks,this);
@@ -46,8 +65,8 @@ namespace DaLinkO
             cbTransmissionVersionExample.SelectedIndex = 0;
 
             //setting up source box bindings
-            PackBind = new BindingSource();
-            ItemBind = new BindingSource();
+            PackBindForSourceDGV = new BindingSource();
+            ItemBindForLiveDataView = new BindingSource();
 
 
             //setting up dgv broadcast list
@@ -55,6 +74,7 @@ namespace DaLinkO
             dgvSourceLiveData.AutoGenerateColumns = false;
             dgvSourceLog.AutoGenerateColumns = false;
             dgvBeanElementsLive.AutoGenerateColumns = false;
+            
         }
 
         //Methods
@@ -63,9 +83,9 @@ namespace DaLinkO
         {
             this.Invoke((MethodInvoker)delegate()
             {
-                PackBind.DataSource = activePacks.bActive.dataPacks;
-                this.dgvSourceLog.DataSource= PackBind;
-                PackBind.ResetBindings(false);
+                PackBindForSourceDGV.DataSource = activePacks.bActive.dataPacks;
+                this.dgvSourceLog.DataSource= PackBindForSourceDGV;
+                PackBindForSourceDGV.ResetBindings(false);
             });
 
         }
@@ -100,8 +120,8 @@ namespace DaLinkO
             myPipeServer.debugMods = false;
             myPipeServer.Run();
 
-            PackBind.DataSource= activePacks.bActive.dataPacks;
-            this.dgvSourceLiveData.DataSource = PackBind;
+            PackBindForSourceDGV.DataSource= activePacks.bActive.dataPacks;
+            this.dgvSourceLiveData.DataSource = PackBindForSourceDGV;
 
 
             if (dgvSourceLog.Rows.Count != 0)
@@ -113,12 +133,12 @@ namespace DaLinkO
                         int i = liveRow.Index;
                         dgvSourceLiveData.Rows[i].Selected = true;
                     }
-                ItemBind.DataSource = SelectedBean.dataElement;
-                dgvBeanElementsLive.DataSource = ItemBind;
+                ItemBindForLiveDataView.DataSource = SelectedBean.dataElement;
+                dgvBeanElementsLive.DataSource = ItemBindForLiveDataView;
 
             }
-            PackBind.ResetBindings(true);
-            ItemBind.ResetBindings(true);
+            PackBindForSourceDGV.ResetBindings(true);
+            ItemBindForLiveDataView.ResetBindings(true);
             timerUiFineRefresh.Start();
             //activePacks.packsAreUpdated += new ActiveBeansUpdatedHandler(refreshLiveData);
         }
@@ -133,7 +153,7 @@ namespace DaLinkO
                         if (liveRow.Selected == true)
                         {
                             DP hold = liveRow.DataBoundItem as DP;
-                            ItemBind.DataSource = hold.dataElement;
+                            ItemBindForLiveDataView.DataSource = hold.dataElement;
                         }
                 }
                 dgvSourceLiveData.Refresh();
@@ -158,6 +178,7 @@ namespace DaLinkO
         }
         public void updateConsole(string incoming)
         {
+            
             this.Invoke((MethodInvoker)delegate()
             {
                 textBoxConsole.AppendText(incoming);
@@ -168,6 +189,14 @@ namespace DaLinkO
 
             });
         }
+        public void updateLoadedBroadcastElements()
+        {
+            foreach (Broadcast b in broadcasts)
+            {
+                //b.transmission.
+            }
+        }
+
 
         //Button and control methods
         private void buttonClearVisibleSources_Click(object sender, EventArgs e)
@@ -177,6 +206,7 @@ namespace DaLinkO
             dgvBeanElementsLive.Rows.Clear();
             textBoxConsole.Text = null;
             //activeBeans.ClearBeans();
+            
         }
         private void buttonCreateNewBroadcast_Click(object sender, EventArgs e)
         {
@@ -275,9 +305,9 @@ namespace DaLinkO
         {
             if (e.RowIndex != -1)
             {
-                ItemBind.DataSource = activePacks.bActive.dataPacks[e.RowIndex].dataElement;
-                this.dgvBeanElementsLive.DataSource = ItemBind;
-                ItemBind.ResetBindings(false);
+                ItemBindForLiveDataView.DataSource = activePacks.bActive.dataPacks[e.RowIndex].dataElement;
+                this.dgvBeanElementsLive.DataSource = ItemBindForLiveDataView;
+                ItemBindForLiveDataView.ResetBindings(false);
             }
         }
         private void dgvBroadcastList_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -322,11 +352,44 @@ namespace DaLinkO
                     generateCode.Show();
                 }
             }
+            //var packQuery =
+            //    from a in activePacks.bActive.dataPacks from b in a.dataElement
+            //    where b.V=="100"
+            //    select b;
+            //foreach (var p in packQuery)
+            //{
+            //    MessageBox.Show("Variable name:" + p.N);
+            //}
+
+
         }
 
         //Events and timer ticks
         private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            foreach (Broadcast b in broadcasts)
+            {
+                b.connection.Disconnect();
+            }
+            
+            if (!Directory.Exists(saveFolderPath))
+            {
+                Directory.CreateDirectory(saveFolderPath);
+                
+            }
+
+            try{using (Stream TestFileStream = File.Create(saveFilePath))
+            {
+                BinaryFormatter serializer = new BinaryFormatter();
+                serializer.Serialize(TestFileStream, broadcasts);
+            }}
+                catch (Exception ex){
+                    MessageBox.Show(ex.ToString());
+
+                }
+         
+           // MessageBox.Show("ran through it");
+
          //   if (MessageBox.Show("Do you want to save your active profile?", "dalinko",
          //MessageBoxButtons.YesNo) == DialogResult.Yes)
          //   {
@@ -343,8 +406,6 @@ namespace DaLinkO
         {
             Thread sourceDGVUpdate = new Thread(updateSourceDGV);
             sourceDGVUpdate.Start();
-            //Thread brdcstUp = new Thread(UpdateBroadcastsDGV);
-            //brdcstUp.Start();
             
         }
         private void tbConsoleInput_KeyDown(object sender, KeyEventArgs e)
@@ -365,13 +426,43 @@ namespace DaLinkO
             refreshLiveData();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
+            if (File.Exists(saveFilePath))
+            {
+                Stream TestFileStream = File.OpenRead(saveFilePath);
+                BinaryFormatter deserializer = new BinaryFormatter();
+                broadcasts = (BroadcastBindingList<Broadcast>)deserializer.Deserialize(TestFileStream);
+                TestFileStream.Close();
+                foreach (Broadcast b in broadcasts)
+                {
+                    b.form1 = this;
+                    b.trigger.SetupTrigger();
+                    b.connection.SetupSerialPort();
+                    b.connection.form1 = this;
+                    activePacks.reattach(b.transmission);
+                }
+                this.dgvBroadcastList.DataSource = broadcasts;
+                
+            }
 
+            
+        }
 
+        private void testButton_Click(object sender, EventArgs e)
+        {
+            //foreach (Broadcast b in broadcasts)
+            //{
 
+                
+            //}
+        }
 
 
 
 
     }
+
+
 }
