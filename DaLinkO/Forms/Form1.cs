@@ -384,7 +384,7 @@ namespace DaLinkO
                 serializer.Serialize(TestFileStream, broadcasts);
             }}
                 catch (Exception ex){
-                    MessageBox.Show(ex.ToString());
+                    MessageBox.Show("Something went wrong when trying to save the current broadcasts to a temp file. Error code: "+ ex.ToString());
 
                 }
          
@@ -429,34 +429,50 @@ namespace DaLinkO
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            /*if a temp file exists for previously loaded broadcasts then import it and populate 
+             * the active bean list with the data sources from each broadcast
+             */
             if (File.Exists(saveFilePath))
             {
                 Stream TestFileStream = File.OpenRead(saveFilePath);
                 BinaryFormatter deserializer = new BinaryFormatter();
-                broadcasts = (BroadcastBindingList<Broadcast>)deserializer.Deserialize(TestFileStream);
-                TestFileStream.Close();
-                foreach (Broadcast b in broadcasts)
-                {
-                    b.form1 = this;
-                    b.trigger.SetupTrigger();
-                    b.connection.SetupSerialPort();
-                    b.connection.form1 = this;
-                    activePacks.reattach(b.transmission);
-                }
-                this.dgvBroadcastList.DataSource = broadcasts;
-                
-            }
 
+                
+                try
+                {
+                    broadcasts = (BroadcastBindingList<Broadcast>)deserializer.Deserialize(TestFileStream);
+                    TestFileStream.Close();
+                    foreach (Broadcast b in broadcasts) //scrape all of the source data from the broadcasts and add it to the source list.
+                    {
+                        b.form1 = this;
+                        b.trigger.SetupTrigger();
+                        b.connection.SetupSerialPort();
+                        b.connection.form1 = this;
+                        activePacks.loadSavedData(b.transmission); //this is buggy!
+                    }
+                }
+                catch (Exception f)
+                {
+                    /*if there is a failure when loading the old data then report the error, 
+                     * close the file stream and then
+                     * delete the bad save file
+                     * */
+                    MessageBox.Show("Oops! incompatible save file failed to load. The save file will be deleted. Error code: "+ f.ToString());
+                    broadcasts.Clear();
+                    TestFileStream.Close();
+                    File.Delete(saveFilePath);
+                    
+                }
+
+   
+            }
+            this.dgvBroadcastList.DataSource = broadcasts; 
             
         }
 
         private void testButton_Click(object sender, EventArgs e)
         {
-            //foreach (Broadcast b in broadcasts)
-            //{
-
-                
-            //}
+            //used just for testing stuff out
         }
 
 

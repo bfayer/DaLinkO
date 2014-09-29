@@ -128,59 +128,81 @@ namespace DaLinkO.Forms
                     else if (selectedDataElement.T == "System.Boolean")
                     {
                         this.dataElement = new TElement_Boolean(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.Double")
                     {
                         this.dataElement = new TElement_Double(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.SByte")
                     {
                         this.dataElement = new TElement_SByte(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                         
                     else if (selectedDataElement.T == "System.Int16")
                     {
                         this.dataElement = new TElement_Int16(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.Int64")
                     {
                         this.dataElement = new TElement_Int64(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.Byte")
                     {
                         this.dataElement = new TElement_Byte(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.UInt16")
                     {
                         this.dataElement = new TElement_UInt16(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.UInt32")
                     {
                         this.dataElement = new TElement_UInt32(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else if (selectedDataElement.T == "System.UInt64")
                     {
                         this.dataElement = new TElement_UInt64(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                         // single and decimal don't seem to work out properly so for now I'm just going to leave them out.
                     //else if (selectedDataElement.T == "System.Single")
                     //{
                     //    this.dataElement = new TElement_Single(tbDataName.Text, selectedDataElement);
+                    //    this.dataElement.elementSourceName = SelectedPack.Src;
+                    //    this.dataElement.modversion = SelectedPack.v;
                     //    this.DialogResult = DialogResult.OK;
                     //}
                     //decimal??
                     else if (selectedDataElement.T == "System.Char")
                     {
                         this.dataElement = new TElement_Char(tbDataName.Text, selectedDataElement);
+                        this.dataElement.elementSourceName = SelectedPack.Src;
+                        this.dataElement.modversion = SelectedPack.v;
                         this.DialogResult = DialogResult.OK;
                     }
                     else

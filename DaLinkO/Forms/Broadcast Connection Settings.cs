@@ -345,8 +345,6 @@ namespace DaLinkO
             }
 
 
-
-
         }
         private void btnMoveUp_Click(object sender, EventArgs e)
         {

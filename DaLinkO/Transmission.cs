@@ -199,6 +199,7 @@ namespace DaLinkO
             set{} 
         }
     }
+    [Serializable]
     public class TElement_Boolean : TElement
     {
         public TElement_Boolean(string name, DE element)
@@ -219,6 +220,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Double : TElement
     {
                 public TElement_Double(string name, DE element) 
@@ -268,6 +270,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Int16 : TElement //aka short
     {
         public TElement_Int16(string name, DE element)
@@ -286,6 +289,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Int64 : TElement //aka long
     {
         public TElement_Int64(string name, DE element)
@@ -324,6 +328,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_UInt16 : TElement //aka ushort
     {
         public TElement_UInt16(string name, DE element)
@@ -343,6 +348,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_UInt32 : TElement //aka uint
     {
         public TElement_UInt32(string name, DE element)
@@ -362,6 +368,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_UInt64 : TElement //aka ulong
     {
         public TElement_UInt64(string name, DE element)
@@ -381,6 +388,7 @@ namespace DaLinkO
             set { }
         }
     }
+    [Serializable]
     public class TElement_Single : TElement
     {
         public TElement_Single(string name, DE element)

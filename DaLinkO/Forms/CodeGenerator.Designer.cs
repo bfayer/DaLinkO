@@ -93,7 +93,7 @@
             this.Controls.Add(this.rtbCode);
             this.Controls.Add(this.cbDeviceType);
             this.Name = "CodeGenerator";
-            this.Text = "CodeGenerator";
+            this.Text = "CodeGenerator (Experimental)";
             this.ResumeLayout(false);
             this.PerformLayout();
 

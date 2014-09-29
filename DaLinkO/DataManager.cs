@@ -108,15 +108,29 @@ namespace DaLinkO
             }
         }
 
-        public void reattach(Transmission loadedTransmission)
+        public void loadSavedData(Transmission loadedTransmission)
         {
             foreach (TElement t in loadedTransmission.TElementList)
             {
 
-                //if (bActive.dataPacks.Count != 0)
-                //{
+
                 if (t.elementName != "trigger")
                 {
+                    //something is wrong here, I think it
+                    //needs to check to see that there isn't one already, if there is one already set the target equal to that one, the way it is 
+                    //right now is bugged out because if there are multiple references to the same thing it keeps overwriting the element with a new one instead of
+                    //simply updating the values and changing the target of the transmission
+
+
+                    /* new idea
+                     * 
+                     * create entirely new active bean pack from all of the T elements in a broadcast
+                     * cast that to the inbound add data class
+                     * re link the telement's linked element
+
+                    */
+
+
 
                     DR tempDR = new DR();
                     DP tempDP = new DP();
@@ -129,81 +143,62 @@ namespace DaLinkO
                     tempDP.LastHeardFrom = DateTime.Now;
                     tempDP.Src = t.elementSourceName;
                     tempDP.v = t.modversion;
-                    t.linkedElement = tempDE;
+
+
                     tempDP.dataElement.Add(tempDE);
                     tempDR.dataPacks.Add(tempDP);
                     tempDR.TV = "1.00";
-                    AddXML_1(tempDR);
+                    AddXML_1(tempDR); 
 
-
-                    //var activePackQuery =
-                    //    from a in bActive.dataPacks
-                    //    where a.Src == t.elementSourceName && t.modversion == a.v //should include version checking
-                    //    select a;
-                    //if (activePackQuery.Count() == 0)//if none of the existing packs matched the new pack then add it
-                    //{
-                    //    DP tempPack = new DP();//create new datapack
-
-                    //    tempPack.Src = t.elementSourceName; //make the name equal the new source name
-                    //    tempPack.v = t.modversion;
-                    //    tempPack.LastHeardFrom = DateTime.Now;
-                        
-                    //    tempPack.dataElement.Add(t.linkedElement); 
-                        
-                    //    bActive.dataPacks.Add(tempPack);
-                    //    newSourceData();
-                    //}
-
-                    //else //if any of the existing packs matched the new pack then try to update their elements
-                    //{
-
-                    //    foreach (var activePack in activePackQuery) //for each existing pack that was found to match the current new pack
-                    //    {
-                    //        foreach (var newElement in newPack.dataElement) //For each data element on the specific new pack 
-                    //        {
-                    //            //MessageBox.Show("check");
-                    //            //query the existing pack's dataElement list to see if there are duplicates with the new datapack's dataElement list
-                    //            var elementQuery =
-                    //                from b in activePack.dataElement
-                    //                where b.N == newElement.N
-                    //                select b;
-                    //            if (elementQuery.Count() == 0)//if the element didn't already exist add it to the active pack
-                    //            {
-                    //                activePack.dataElement.Add(newElement);
-                    //                newSourceData();
-                    //            }
-                    //            else //if the element did already exist update all of them
-                    //            {
-
-                    //                foreach (var matchingElement in elementQuery) //for each element that existed already update the value
-                    //                {
-                    //                    matchingElement.V = newElement.V;
-                    //                }
-                    //            }
-
-                    //            activePack.LastHeardFrom = DateTime.Now; //refreshes the lastheard from variable for the updated active pack
-
-                    //        }
-
-                    //    }
-                    //}
-                    //}
-                    //else
-                    //{
-                    //    bActive.dataPacks.Add(newPack); //if no packs exist just add the new one
-                    //    newSourceData();
-                    //}
+                    reattachLinkeElement(t);
 
 
                 }
             }
 
+            //this probably shouldn't be used because this is all ghost data anyways from previous saves
             //if (packsAreUpdated != null) // will be null if no subscribers
             //{
             //    packsAreUpdated();  //global trigger for packs are updated, may be depreciated now that im doing it by passing the objects rather than events
             //}
 
+        }
+        public void reattachLinkeElement(TElement newElement)
+        {
+            //step through bactive and find the element by name and source and relink the newelement.linkedElement
+            lock (((ICollection)bActive.dataPacks).SyncRoot)
+            {
 
+                var bActiveQuery =
+                    from a in bActive.dataPacks
+                    where a.Src == newElement.elementSourceName && a.v == newElement.modversion
+                    select a;
+                if (bActiveQuery.Count() != 0)//if none of the existing packs matched the new pack then add it
+                {
+
+                    foreach (var matchingPack in bActiveQuery) //for each existing pack that was found to match the current new pack
+                    {
+
+                        var elementQuery =
+                            from b in matchingPack.dataElement
+                            where b.N == newElement.linkedElement.N
+                            select b;
+
+                        if (elementQuery.Count() != 0)//if the element didn't already exist add it to the active pack
+                        {
+                            foreach (var matchingElement in elementQuery)
+                            {
+                                newElement.linkedElement = matchingElement;
+                            }
+
+                        }
+
+
+
+                    }
+
+                }
+            }
         }
 
 
