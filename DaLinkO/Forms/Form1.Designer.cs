@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.timerUiRoughRefresh = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,6 @@
             this.tabModes = new System.Windows.Forms.TabControl();
             this.tabDashboard = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.testButton = new System.Windows.Forms.Button();
             this.btnGenerateSketch = new System.Windows.Forms.Button();
             this.tabDebugPage = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
@@ -83,11 +83,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.dgvBeanElementsLive = new System.Windows.Forms.DataGridView();
-            this.timerUiFineRefresh = new System.Windows.Forms.Timer(this.components);
             this.nDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.vDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.beanElementBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.timerUiFineRefresh = new System.Windows.Forms.Timer(this.components);
             this.broadcastBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourceLog)).BeginInit();
@@ -387,9 +387,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 207);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(204, 17);
+            this.label2.Size = new System.Drawing.Size(228, 17);
             this.label2.TabIndex = 16;
-            this.label2.Text = "Console for selected broadcast";
+            this.label2.Text = "Response from selected broadcast";
             // 
             // tbConsoleInput
             // 
@@ -457,7 +457,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.White;
-            this.splitContainer1.Panel1.Controls.Add(this.testButton);
             this.splitContainer1.Panel1.Controls.Add(this.btnGenerateSketch);
             this.splitContainer1.Panel1.Controls.Add(this.btnEditBroadcast);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
@@ -479,17 +478,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(912, 547);
             this.splitContainer1.SplitterDistance = 542;
             this.splitContainer1.TabIndex = 20;
-            // 
-            // testButton
-            // 
-            this.testButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.testButton.Location = new System.Drawing.Point(403, 521);
-            this.testButton.Name = "testButton";
-            this.testButton.Size = new System.Drawing.Size(87, 25);
-            this.testButton.TabIndex = 21;
-            this.testButton.Text = "test";
-            this.testButton.UseVisualStyleBackColor = true;
-            this.testButton.Click += new System.EventHandler(this.testButton_Click);
             // 
             // btnGenerateSketch
             // 
@@ -739,11 +727,6 @@
             this.dgvBeanElementsLive.Size = new System.Drawing.Size(439, 513);
             this.dgvBeanElementsLive.TabIndex = 1;
             // 
-            // timerUiFineRefresh
-            // 
-            this.timerUiFineRefresh.Interval = 50;
-            this.timerUiFineRefresh.Tick += new System.EventHandler(this.timerUiFineRefresh_Tick);
-            // 
             // nDataGridViewTextBoxColumn
             // 
             this.nDataGridViewTextBoxColumn.DataPropertyName = "N";
@@ -772,6 +755,11 @@
             // 
             this.beanElementBindingSource.DataSource = typeof(DaLinkO.DE);
             // 
+            // timerUiFineRefresh
+            // 
+            this.timerUiFineRefresh.Interval = 50;
+            this.timerUiFineRefresh.Tick += new System.EventHandler(this.timerUiFineRefresh_Tick);
+            // 
             // broadcastBindingSource
             // 
             this.broadcastBindingSource.DataSource = typeof(DaLinkO.Broadcast);
@@ -784,6 +772,7 @@
             this.Controls.Add(this.tabModes);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(920, 500);
             this.Name = "Form1";
@@ -887,7 +876,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn vDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btnGenerateSketch;
         private System.Windows.Forms.Timer timerUiFineRefresh;
-        private System.Windows.Forms.Button testButton;
     }
 }
 

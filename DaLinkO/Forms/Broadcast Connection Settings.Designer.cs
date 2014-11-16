@@ -76,7 +76,8 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(16, 407);
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSave.Location = new System.Drawing.Point(15, 451);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(142, 28);
             this.btnSave.TabIndex = 0;
@@ -86,8 +87,9 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(164, 407);
+            this.btnCancel.Location = new System.Drawing.Point(163, 451);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(145, 28);
             this.btnCancel.TabIndex = 1;
@@ -394,7 +396,7 @@
             this.dgvTransmission.RowHeadersVisible = false;
             this.dgvTransmission.RowTemplate.Height = 24;
             this.dgvTransmission.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTransmission.Size = new System.Drawing.Size(393, 296);
+            this.dgvTransmission.Size = new System.Drawing.Size(393, 324);
             this.dgvTransmission.TabIndex = 23;
             this.dgvTransmission.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvTransmission_RowPostPaint);
             // 
@@ -461,7 +463,7 @@
             // btnCheckTransmission
             // 
             this.btnCheckTransmission.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCheckTransmission.Location = new System.Drawing.Point(535, 407);
+            this.btnCheckTransmission.Location = new System.Drawing.Point(534, 451);
             this.btnCheckTransmission.Name = "btnCheckTransmission";
             this.btnCheckTransmission.Size = new System.Drawing.Size(210, 29);
             this.btnCheckTransmission.TabIndex = 26;
@@ -473,7 +475,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(468, 382);
+            this.label6.Location = new System.Drawing.Point(468, 421);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(180, 17);
             this.label6.TabIndex = 27;
@@ -482,7 +484,7 @@
             // tbTotalBytes
             // 
             this.tbTotalBytes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTotalBytes.Location = new System.Drawing.Point(645, 379);
+            this.tbTotalBytes.Location = new System.Drawing.Point(645, 418);
             this.tbTotalBytes.Name = "tbTotalBytes";
             this.tbTotalBytes.ReadOnly = true;
             this.tbTotalBytes.Size = new System.Drawing.Size(100, 22);
@@ -492,12 +494,12 @@
             // 
             this.timerTransmissionDGVUpdater.Tick += new System.EventHandler(this.timerTransmissionDGVUpdater_Tick);
             // 
-            // BeanCaster_Connection_Settings
+            // Broadcast_Connection_Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(757, 449);
+            this.ClientSize = new System.Drawing.Size(757, 491);
             this.ControlBox = false;
             this.Controls.Add(this.tbTotalBytes);
             this.Controls.Add(this.label6);
@@ -519,7 +521,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.MinimumSize = new System.Drawing.Size(775, 495);
-            this.Name = "BeanCaster_Connection_Settings";
+            this.Name = "Broadcast_Connection_Settings";
             this.Text = "BeanCaster_Connection_Settings";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

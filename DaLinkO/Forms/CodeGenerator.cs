@@ -35,15 +35,15 @@ namespace DaLinkO
             if (broadcast.transmission.TElementList[0].elementValueAsText == "#")//checks to see that there is a transmission byte, is this necessary? should probably just do it when launching the form
             {    
 
-                if (cbDeviceType.SelectedIndex == 0)
+                if (cbDeviceType.SelectedIndex == 0) //if it's an arduino then....
                 {
-                    if (cbProgramType.SelectedIndex == 0)
+                    if (cbProgramType.SelectedIndex == 0)  //choose which program to generate..
                     {
-                        try { codeArduinoRead(); }
+                        try { codeArduinoRead(); } //try to generate the code
                         catch (Exception e)
                         {
                             rtbCode.Clear();
-                            rtbCode.Text = e.ToString();
+                            rtbCode.Text = e.ToString(); //print errors in the main box if it's bugged out
 
                         }
                     }
@@ -78,16 +78,17 @@ Created: {3}
 
         /// <summary>
         /// initializes the generation of code and prints it in the text box
+        /// needs to be overhauled
         /// </summary>
         private void codeArduinoRead()
         {
             string header = codeHeader("Arduino UNO", "Read"); //header tag
-            string variables = codeVariables_ArduinoUno(); 
-            string int32Union = int32unions_ArduinoUno(); //unions if there are ints
+            string variables = codeVariables_ArduinoUno(); //sets up the variable types and names ie:  int hp;
+            string int32Union = int32unions_ArduinoUno(); //creates int32 unions if there are ints32's
             string setup = codeSetup_ArduinoUno(); // setup code for serial port
             string byteBuf = byteBuffer_ArduinoUno(); //standard byte buffer stuff (measures broadcast length and sizes accordingly.)
             string unionLoopCallouts = mainLoopUnions_ArduinoUno(); //calls union names in loop
-            string intPopulator = intPopulator_ArduinoUno();
+            string varPopulation = varPopulator_ArduinoUno(); //populates all of the variables with the new data from the buffer
             rtbCode.Text = String.Format(@"{0}
 
 //read buffer stuff
@@ -124,7 +125,7 @@ void loop()
 
       Serial.flush();
     }} 
-}}", header, byteBuf, variables,int32Union, setup, unionLoopCallouts, Convert.ToString(broadcast.transmission.GetByteCount()-1),intPopulator);
+}}", header, byteBuf, variables,int32Union, setup, unionLoopCallouts, Convert.ToString(broadcast.transmission.GetByteCount()-1),varPopulation);
         }
 
 
@@ -214,7 +215,7 @@ union ArrayToInt32 {
 
             return unionLoops;
         }
-        private string intPopulator_ArduinoUno()
+        private string varPopulator_ArduinoUno()
         {
             string populatedInts ="";
             int bufferCount = 0;
@@ -225,14 +226,19 @@ union ArrayToInt32 {
                 if (t.type == "System.Int32")
                 {
                     int x = 0;
-                    while (x < 4)
+                    while (x < 4) //this sends the 4 bytes that make up the integer into the union array for each specific type.
                     {
                     populatedInts = String.Concat(populatedInts, "            "+ t.elementName + "U.array[" + Convert.ToString(x) + "] = buffer[" + Convert.ToString(bufferCount) +"];"  + Environment.NewLine);
                     x++;
                     bufferCount++;
 
                     }
-                    populatedInts = String.Concat(populatedInts, "            "+ t.elementName + "=" + t.elementName + "U.integer;" + Environment.NewLine);
+                    populatedInts = String.Concat(populatedInts, "            "+ t.elementName + "=" + t.elementName + "U.integer;" + Environment.NewLine);   // creates lines like hp = hpU.integer;
+                }
+                else if (t.type == "System.Boolean")
+                {
+                    populatedInts = String.Concat(populatedInts, "            " + t.elementName + " = buffer[" + Convert.ToString(bufferCount) + "];" + Environment.NewLine);
+                    bufferCount++;
                 }
                 
             }

@@ -153,6 +153,7 @@
             this.Controls.Add(this.tbNumOfBytes);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbConstantType);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ConstantPicker";
             this.Text = "ConstantPicker";
             this.ResumeLayout(false);

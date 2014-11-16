@@ -11,16 +11,15 @@ using System.Xml.Serialization;
 namespace DaLinkO
 {
 
-
     public class PipeServer
     {
 
-        DataManager activeBeans;
+        DataManager activePacks;
         Form1 backwardsForm1;
 
         public PipeServer(DataManager b, Form1 f)
         {
-            activeBeans = b;
+            activePacks = b;
             backwardsForm1 = f;
         }
 
@@ -80,7 +79,7 @@ namespace DaLinkO
                     {
                     }
                 }
-            activeBeans.updateDataPacks(newbeans);
+            activePacks.updateDataPacks(newbeans);
             }
             else  //if in debugg mode send the data as text to the debugg box
             {

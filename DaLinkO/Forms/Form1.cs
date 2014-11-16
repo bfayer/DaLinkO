@@ -470,11 +470,6 @@ namespace DaLinkO
             
         }
 
-        private void testButton_Click(object sender, EventArgs e)
-        {
-            //used just for testing stuff out
-        }
-
 
 
 
