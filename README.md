@@ -1,5 +1,6 @@
 DaLinkO
 =======
+My first C#/OO program so it's a bunch of spaghetti
 
 Compile in visual studio 2012
 
